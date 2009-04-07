@@ -38,8 +38,10 @@ module EnumField
           self.send(field) == current_value
         end
       end
+
+      options_for_validates = { :in => possible_values, :message => message }
   
-      validates_inclusion_of field, :in => possible_values, :message => message
+      validates_inclusion_of field, options_for_validates
     end
   end
 end

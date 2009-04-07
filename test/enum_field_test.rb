@@ -3,7 +3,7 @@ require 'test/unit'
 require 'rubygems'
 require 'active_record'
 require 'active_support'
-require 'mocha'
+require 'rr'
 require 'shoulda'
 require File.dirname(__FILE__)+'/../lib/enum_field'
 require File.dirname(__FILE__)+'/../init'
@@ -11,10 +11,12 @@ require File.dirname(__FILE__)+'/../init'
 class MockedModel; include EnumField; end;
 
 class EnumFieldTest < Test::Unit::TestCase
+  include RR::Adapters::TestUnit
+
   context "with a simple gender enum" do
     setup do
       @possible_values = %w( male female )
-      MockedModel.expects(:validates_inclusion_of).with(:gender, :in => @possible_values, :message => "invalid gender")
+      mock(MockedModel).validates_inclusion_of :gender, :in => @possible_values, :message => "invalid gender"
       MockedModel.send(:enum_field, :gender, @possible_values)
     end
   
@@ -25,10 +27,11 @@ class EnumFieldTest < Test::Unit::TestCase
     should "create query methods for each enum type" do
       model = MockedModel.new
       
-      model.stubs(:gender).returns("male")
+      stub(model).gender.returns("male")
       assert model.male?
       assert !model.female?
-      model.stubs(:gender).returns("female")
+
+      stub(model).gender.returns("female")
       assert !model.male?
       assert model.female?
     end
@@ -41,7 +44,7 @@ class EnumFieldTest < Test::Unit::TestCase
   context "Specifying a message" do
     setup do
       @possible_values = %w(on off)
-      MockedModel.expects(:validates_inclusion_of).with(:status, :in => @possible_values, :message => "custom insult")
+      mock(MockedModel).validates_inclusion_of :status, :in => @possible_values, :message => "custom insult"
     end
 
     should "override the default message" do
@@ -51,7 +54,7 @@ class EnumFieldTest < Test::Unit::TestCase
 
   context "With an enum containing multiple word choices" do
     setup do
-      MockedModel.stubs(:validates_inclusion_of)
+      stub(MockedModel).validates_inclusion_of
       MockedModel.send :enum_field, :field, ['choice one', 'choice-two', 'other']
       @model = MockedModel.new
     end
@@ -67,7 +70,7 @@ class EnumFieldTest < Test::Unit::TestCase
 
   context "With an enum containing mixed case choices" do
     setup do
-      MockedModel.stubs(:validates_inclusion_of)
+      stub(MockedModel).validates_inclusion_of
       MockedModel.send :enum_field, :field, ['Choice One', 'ChoiceTwo', 'Other']
       @model = MockedModel.new
     end
@@ -83,7 +86,7 @@ class EnumFieldTest < Test::Unit::TestCase
 
   context "With an enum containing strange characters" do
     setup do
-      MockedModel.stubs(:validates_inclusion_of)
+      stub(MockedModel).validates_inclusion_of
       MockedModel.send :enum_field, :field, ['choice%one', 'choice☺two', 'other.']
       @model = MockedModel.new
     end

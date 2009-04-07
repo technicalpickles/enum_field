@@ -55,6 +55,14 @@ class EnumFieldTest < Test::Unit::TestCase
     MockedModel.send(:enum_field, :side, possible_values, { :allow_blank => true })
   end
 
+  should "be able to allow nil" do
+    possible_values = %w(opponent proponent)
+    mock(MockedModel).validates_inclusion_of :side, :in => possible_values, :allow_nil => true, :message => "invalid side" # FIXME should be able to specify anything instead of "invalid side"
+
+    MockedModel.send(:enum_field, :side, possible_values, { :allow_nil => true })
+
+  end
+
   context "With an enum containing multiple word choices" do
     setup do
       stub(MockedModel).validates_inclusion_of

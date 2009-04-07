@@ -28,7 +28,9 @@ module EnumField
     # - define the STATUSES constant, which contains the acceptable values
     def enum_field(field, possible_values, options={})
       message = options[:message] || "invalid #{field}"
-      const_set field.to_s.pluralize.upcase, possible_values unless const_defined?(field.to_s.pluralize.upcase)
+      const_name = field.to_s.pluralize.upcase
+
+      const_set const_name, possible_values unless const_defined?(const_name)
   
       possible_values.each do |current_value|
         method_name = current_value.downcase.gsub(/[-\s]/, '_')

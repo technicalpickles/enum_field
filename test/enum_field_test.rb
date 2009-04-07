@@ -1,10 +1,10 @@
 $LOAD_PATH.reject! { |path| path.include?('TextMate') }
 require 'test/unit'
 require 'rubygems'
+require 'active_record'
 require 'active_support'
 require 'mocha'
 require 'shoulda'
-require 'active_record'
 require File.dirname(__FILE__)+'/../lib/enum_field'
 require File.dirname(__FILE__)+'/../init'
 

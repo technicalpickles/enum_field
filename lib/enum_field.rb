@@ -40,6 +40,7 @@ module EnumField
       end
 
       options_for_validates = { :in => possible_values, :message => message }
+      options_for_validates[:allow_blank] = true if options[:allow_blank]
   
       validates_inclusion_of field, options_for_validates
     end

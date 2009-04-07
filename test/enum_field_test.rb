@@ -41,15 +41,18 @@ class EnumFieldTest < Test::Unit::TestCase
     end
   end
 
-  context "Specifying a message" do
-    setup do
-      @possible_values = %w(on off)
-      mock(MockedModel).validates_inclusion_of :status, :in => @possible_values, :message => "custom insult"
-    end
+  should "be able to override message" do
+    possible_values = %w(on off)
+    mock(MockedModel).validates_inclusion_of :status, :in => possible_values, :message => "custom insult"
 
-    should "override the default message" do
-      MockedModel.send(:enum_field, :status, @possible_values, :message => 'custom insult')
-    end
+    MockedModel.send(:enum_field, :status, possible_values, :message => 'custom insult')
+  end
+
+  should "be able to allow blank" do
+    possible_values = %w(opponent proponent)
+    mock(MockedModel).validates_inclusion_of :side, :in => possible_values, :allow_blank => true, :message => "invalid side" # FIXME should be able to specify anything instead of "invalid side"
+
+    MockedModel.send(:enum_field, :side, possible_values, { :allow_blank => true })
   end
 
   context "With an enum containing multiple word choices" do
